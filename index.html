@@ -1,0 +1,148 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>OnboardIQ: job simulator V1</title>
+<style>
+:root{--bg:#f6f7fb;--fg:#151a2e;--cd:#fff;--mu:#626a85;--ac:#4f46e5;--at:#eceeff;--ok:#12a46f;--bd:#e1e5ef;--wn:#fff5e6;--wb:#f0c987;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1420;--fg:#e8ecf5;--cd:#181f2f;--mu:#99a3bf;--ac:#8b8cff;--at:#232a4d;--ok:#4cc38a;--bd:#2a3350;--wn:#2f2616;--wb:#6b5320;color-scheme:dark}}
+:root[data-theme=dark]{--bg:#0f1420;--fg:#e8ecf5;--cd:#181f2f;--mu:#99a3bf;--ac:#8b8cff;--at:#232a4d;--ok:#4cc38a;--bd:#2a3350;--wn:#2f2616;--wb:#6b5320;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid var(--bd);background:var(--cd)}
+.logo{font-weight:800;font-size:18px;letter-spacing:-.02em}
+.seg{margin-left:auto;display:flex;background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:3px}
+.seg button{border:0;background:none;color:var(--mu);font:inherit;padding:6px 14px;border-radius:7px;cursor:pointer}
+.seg button.on{background:var(--cd);color:var(--fg);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.sim{background:var(--at);color:var(--ac);text-align:center;font-size:12px;padding:4px 8px}
+main{max-width:880px;margin:0 auto;padding:24px 20px 110px}
+.c{background:var(--cd);border:1px solid var(--bd);border-radius:14px;padding:20px;margin-bottom:16px}
+h2{font-size:22px;letter-spacing:-.02em;margin:0 0 4px}h3{font-size:15px;margin:0 0 12px}.k{color:var(--mu);font-size:13px}
+summary{cursor:pointer;font-weight:600}
+.b{font:inherit;border:1px solid var(--bd);background:var(--cd);color:var(--fg);border-radius:10px;padding:8px 14px;cursor:pointer}
+.b:hover{border-color:var(--ac)}.b:focus-visible,.nd:focus-visible,input:focus-visible,textarea:focus-visible,.seg button:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.b.p{background:var(--ac);color:var(--cd);border-color:var(--ac);font-weight:600}
+.chip{font-size:12px;background:var(--at);color:var(--ac);border-radius:6px;padding:2px 8px}.chip.ok{color:var(--ok)}.ok{color:var(--ok)}
+.pg{height:8px;background:var(--bd);border-radius:9px;overflow:hidden}.pg i{display:block;height:100%;background:var(--ac);border-radius:9px;transition:width .4s}
+.tree{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}@media(max-width:720px){.tree{grid-template-columns:1fr}}
+.col h4{margin:0 0 10px;font-size:13px;color:var(--mu);font-weight:600}.rail{border-left:2px solid var(--bd);padding-left:16px;display:grid;gap:8px}
+.nd{position:relative;display:flex;align-items:center;gap:8px;width:100%;text-align:left;font:inherit;background:var(--cd);color:var(--fg);border:1px solid var(--bd);border-radius:10px;padding:10px 12px;cursor:pointer}
+.nd::before{content:"";position:absolute;left:-18px;top:50%;width:16px;border-top:2px solid var(--bd)}.nd:hover{border-color:var(--ac)}.nd.dn{background:var(--at)}
+.dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--bd);flex:none;display:grid;place-items:center;font-size:11px;color:#fff}.dn .dot{background:var(--ok);border-color:var(--ok)}
+.org{display:flex;flex-direction:column;align-items:center;margin-top:14px}.ln{width:2px;height:16px;background:var(--bd)}
+.kids{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;border-top:2px solid var(--bd);padding-top:16px}
+.pn{position:relative;border:1px solid var(--bd);border-radius:10px;padding:8px 14px;text-align:center;background:var(--cd)}
+.kids .pn::before{content:"";position:absolute;left:50%;top:-18px;height:16px;border-left:2px solid var(--bd)}
+.tl{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:12px 0}
+.tl div{background:var(--bg);border-radius:10px;padding:10px 12px;font-size:14px}.tl b{display:block;font-size:12px;color:var(--mu);font-weight:600}
+.wn{background:var(--wn);border:1px solid var(--wb);border-radius:10px;padding:10px 12px;font-size:14px;margin:12px 0}
+.win{border:1px solid var(--bd);border-radius:12px;overflow:hidden;background:var(--cd);box-shadow:0 8px 28px rgba(20,26,46,.12)}
+.bar{display:flex;gap:6px;align-items:center;background:var(--bg);border-bottom:1px solid var(--bd);padding:9px 12px;font-size:12px;color:var(--mu)}
+.bar i{width:10px;height:10px;border-radius:50%;background:var(--bd)}.scr{padding:20px}.o{display:block;width:100%;margin:8px 0;text-align:left}
+.hl{outline:3px solid var(--ac);outline-offset:2px;animation:p 1s infinite}@keyframes p{50%{outline-color:transparent}}
+.coach{display:flex;gap:12px;align-items:center;margin-top:14px;background:var(--at);border-radius:12px;padding:12px 14px}
+.av{width:36px;height:36px;border-radius:50%;background:var(--ac);color:var(--cd);display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.av.t{animation:q .8s infinite}@keyframes q{50%{box-shadow:0 0 0 8px color-mix(in srgb,var(--ac) 30%,transparent)}}
+#ag{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:5;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.pnl{width:min(340px,calc(100vw - 32px));margin:0;box-shadow:0 8px 28px rgba(20,26,46,.18)}.pnl[hidden]{display:none}
+.fab{display:flex;gap:8px;align-items:center;border-radius:99px;padding:5px 16px 5px 5px;box-shadow:0 4px 16px rgba(20,26,46,.2)}
+input,textarea{font:inherit;width:100%;padding:9px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--fg)}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{text-align:left;padding:7px 4px;border-bottom:1px solid var(--bd)}
+.big{display:flex;gap:24px;align-items:center;flex-wrap:wrap;margin:12px 0}.big>div{flex:1;min-width:200px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.emp{display:flex;gap:12px;align-items:center}.emp a{color:var(--ac)}.av{overflow:hidden}.av svg{width:100%;height:100%}.av.big{width:46px;height:46px}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}.hd h3{margin:0}
+.tm{list-style:none;margin:16px 0 18px 14px;padding:0;border-left:2px solid var(--bd)}.tm li{position:relative;padding:0 0 18px 26px}
+.nm{position:absolute;left:-15px;top:0;width:28px;height:28px;border-radius:50%;background:var(--ac);color:var(--cd);display:grid;place-items:center;font-size:13px;font-weight:700}
+.win{position:relative;overflow:visible}.bar{border-radius:12px 12px 0 0}.url{margin-left:8px;background:var(--cd);border:1px solid var(--bd);border-radius:6px;padding:1px 10px;flex:1;max-width:320px}
+.app{display:grid;grid-template-columns:150px 1fr;min-height:320px}.an{border-right:1px solid var(--bd);background:var(--bg);padding:12px 8px;display:flex;flex-direction:column;gap:4px;font-size:14px}.an span{padding:6px 8px;color:var(--mu)}
+.tb{display:flex;gap:8px;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--bd)}.mn2{padding:16px}.mn2 h4{margin:0 0 12px;font-size:16px;max-width:60%}
+.sk{display:block;height:10px;background:var(--bd);border-radius:5px;margin:8px 0;width:90%}.sk.w2{width:55%}.mb{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.cw{position:relative;display:inline-block}.an .cw{display:block}
+.ctl{font:inherit;font-size:13px;border:1px solid var(--bd);background:var(--cd);color:var(--fg);border-radius:6px;padding:6px 10px;cursor:pointer}.an .ctl{width:100%;text-align:left;border-color:transparent;background:none}
+.ctl:hover{border-color:var(--ac)}.ctl:focus-visible{outline:2px solid var(--ac)}
+.tip{position:absolute;top:calc(100% + 10px);left:0;width:230px;background:var(--fg);color:var(--bg);padding:8px 10px;border-radius:8px;font-size:12px;z-index:4}
+.tip::before{content:"";position:absolute;top:-6px;left:16px;border:6px solid transparent;border-top:0;border-bottom-color:var(--fg)}
+.pip{position:absolute;right:12px;top:50px;z-index:3;display:flex;gap:10px;align-items:center;background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:8px 10px;box-shadow:0 6px 20px rgba(20,26,46,.2)}
+.cap{background:#10131f;color:#fff;padding:12px 16px;text-align:center;border-radius:0 0 12px 12px;min-height:46px}
+.mdl{position:fixed;inset:0;background:rgba(10,14,30,.55);z-index:20;display:grid;place-items:center;padding:20px}.mdl[hidden]{display:none}.mbx{background:var(--cd);border-radius:14px;max-width:980px;width:100%;max-height:85vh;overflow:auto;padding:20px}
+.pn.me{border-color:var(--ac);background:var(--at)}.kids .org{margin-top:0}
+@media(max-width:720px){.app{grid-template-columns:1fr}.an{flex-direction:row;flex-wrap:wrap}.pip{position:static;margin:8px}.mn2 h4{max-width:none}}
+</style></head><body>
+<header><div class="emp" id="emp"></div><nav class="seg" id="nv"></nav></header><div class="sim">OnboardIQ simulation with dummy data. Not a real company system.</div><main id="mn"></main><div id="ag"></div><div class="mdl" id="md" hidden></div>
+<script>
+const $=i=>document.getElementById(i),e=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const T=(n,a,s,c,k,v)=>({n,a,s,c,k,v});
+const W=[
+{id:1,br:"BAU",t:"Write and approve a PRD",res:"An approved PRD in Docs with a linked Jira epic.",sign:"Head of Product, Engineering Lead and Design Lead.",why:"Engineering can’t estimate or start until the problem, scope and success metric are agreed.",who:"Ritu Kapoor, Isha Verma, Sana Qureshi",when:"Before sprint planning, about 5 working days.",where:"Docs, Jira",pit:[["Scope grows after sign-off.","Freeze scope in the doc and log every change."],["Vague success metric.","Write one number with a target, such as checkout conversion from 61% to 66%."]],st:[
+T("Start from the template","Docs","New feature: one-click checkout. Start the document.",[["Templates","Opens approved templates","n"],["New blank page","Creates an empty page with no structure","t"],["Use PRD template","Copies the company PRD with every required section","m"]],2,"Always start from the PRD template. It has the sections reviewers expect."),
+T("Define problem and metric","Docs","Fill in the problem and the success metric.",[["Add success metric","Inserts the metric block reviewers check first","t"],["Add screenshot","Attaches an image","t"],["Insert emoji","Decoration only, not required","t"]],0,"Write the problem in one line, then add one success metric with a target."),
+T("Request sign-off","Docs","The draft is ready. Get the approvals.",[["Share link","Gives view access but records no approval","t"],["Request approval","Sends the doc to the three required sign-offs and records each one","t"],["Export PDF","Makes a static copy that can’t be approved","t"]],1,"Use Request approval so every sign-off is recorded.")]},
+{id:2,br:"BAU",t:"Prioritise the backlog",res:"A ranked sprint the team commits to.",sign:"Engineering Lead confirms capacity.",why:"The sprint should hold the highest impact work for the effort, not the loudest request.",who:"Isha Verma, Dev Malhotra",when:"Two days before sprint planning.",where:"Jira, Analytics",pit:[["The loudest request wins.","Score every ticket with the same impact and effort formula."],["Capacity ignored.","Check available points before you commit the list."]],st:[
+T("Open the backlog","Jira","Open the backlog for the Checkout team.",[["Roadmap","Shows quarter-level plans, not tickets","n"],["Backlog","Lists all unplanned tickets","n"],["Reports","Shows charts about past sprints","n"]],1,"Open Backlog to see every unplanned ticket."),
+T("Score each ticket","Jira","Rank the tickets by value.",[["Sort by date","Orders by age, not value","t"],["Add ICE score","Adds impact, confidence and ease so tickets can be ranked","t"],["Assign to me","Takes ownership of a ticket","t"]],1,"Score every ticket the same way so the ranking is fair."),
+T("Commit the sprint","Jira","Move the top-ranked tickets into a sprint.",[["Create sprint","Starts a sprint with the selected tickets","m"],["Delete tickets","Removes tickets permanently","m"],["Mark all done","Closes tickets without any work","m"]],0,"Create the sprint with the top tickets that fit the team’s capacity.")]},
+{id:3,br:"Ad-hoc",t:"Release go or no-go",res:"A recorded go or no-go decision for the release.",sign:"Head of Product and Head of Engineering.",why:"A broken checkout loses revenue within minutes of release.",who:"Ritu Kapoor, Vikram Rao, Kabir Shah, Tara Dsouza",when:"The day before release.",where:"Jira, Slack",pit:[["Open blockers.","Check that no blocker ticket is open before you ask for a go."],["Teams not told.","Post the decision in the launch channel so every team sees it."]],st:[
+T("Check release blockers","Jira","Check for open blocker tickets on the release.",[["Filter: Blocker","Shows only tickets that block the release","t"],["Filter: Mine","Shows tickets assigned to you","t"],["Filter: Closed","Shows finished tickets","t"]],0,"Filter by Blocker. A release with open blockers is not ready."),
+T("Confirm with QA","Slack","Ask QA for the regression result.",[["Message Kabir (QA)","Sends a private message to the QA owner","n"],["Post in #general","Posts to the whole company","n"],["Mute channel","Silences notifications","n"]],0,"Message Kabir directly for the regression result."),
+T("Announce the decision","Slack","Announce the go decision.",[["Post in #launch","Notifies every team involved in the release","m"],["Email the CEO","Escalates without need","m"],["Pin in #general","Highlights it company-wide","m"]],0,"Post the decision in #launch with the release time.")]},
+{id:4,br:"KPI",t:"Weekly funnel review",res:"A short funnel summary posted for leadership.",sign:"None. Head of Product reads it on Monday.",why:"Leadership tracks checkout conversion weekly and needs to know what moved it.",who:"Dev Malhotra, Ritu Kapoor",when:"Every Friday by 4 pm.",where:"Analytics, Slack",pit:[["Wrong date range.","Use the last 7 days, not all time."],["Numbers without a cause.","Break the drop down by step before you post."]],st:[
+T("Open the funnel","Analytics","Open the checkout funnel for the last 7 days.",[["Funnels","Shows step-by-step conversion","n"],["Reports","Lists saved reports","n"],["Dashboards","Shows overview tiles","n"]],0,"Open Funnels to see conversion at every step."),
+T("Find the drop","Analytics","Conversion fell from 61% to 57%. Find where.",[["Break down by step","Shows where users leave the funnel","t"],["Export CSV","Downloads raw data","t"],["Show all time","Hides the recent movement","t"]],0,"Break it down by step to see where users leave."),
+T("Post the summary","Slack","Share the result.",[["Post in #product","Shares with the product team and leadership","m"],["Message Ritu only","Reaches one person","m"],["Keep as draft","Shares nothing","m"]],0,"Post in #product with the step that dropped.")]}];
+const D={id:5,br:"Ad-hoc",t:"Run a customer interview",res:"Notes shared with the team the same day.",sign:"None.",why:"Direct customer words shape the roadmap.",who:"Sana Qureshi, Ritu Kapoor",when:"Once a fortnight.",where:"Calendar, Docs",pub:false,pit:[["Notes stay private.","Share them the same day."]],st:[
+T("Book the session","Calendar","Book a 30 minute call with the customer.",[["New event","Creates a meeting","t"],["Delete event","Removes it","t"]],0,"Create a new event with the customer."),
+T("Share the notes","Docs","Share your notes.",[["Share with team","Gives the team access","t"],["Keep private","Nobody else sees them","t"]],0,"Share the notes with the team the same day.")]};
+const AP={Docs:["Home","PRDs","Shared"],Jira:["Board","Epics","Releases"],Analytics:["Overview","Segments","Alerts"],Slack:["Threads","Mentions","Saved"],Calendar:["Day","Week","Month"]};
+const AV=`<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#c7cbff"/><circle cx="32" cy="26" r="11" fill="#f2c9a5"/><path d="M20 25c0-13 24-13 24 0-6-5-18-5-24 0z" fill="#2b2140"/><path d="M10 64c2-16 12-20 22-20s20 4 22 20z" fill="#4f46e5"/></svg>`;
+const ORG={n:"Meera Nair",r:"CEO",k:[{n:"Ritu Kapoor",r:"Head of Product",k:[{n:"Arjun Mehta",r:"Product Manager",me:1},{n:"Sana Qureshi",r:"Product Designer"},{n:"Dev Malhotra",r:"Data Analyst"}]},{n:"Vikram Rao",r:"Head of Engineering",k:[{n:"Isha Verma",r:"Engineering Lead"},{n:"Kabir Shah",r:"QA Engineer"}]},{n:"Nisha Bose",r:"Head of Marketing",k:[{n:"Tara Dsouza",r:"Growth Marketer"}]},{n:"Omar Sheikh",r:"Head of Customer Success"}]};
+let V="emp",sel=null,run=null,done={},cm=[],sc=[],ing=0,fl=0,ps=0;
+function say(t){ps=0;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t),f=x=>document.querySelectorAll(".av").forEach(a=>a.classList.toggle("t",x));u.onstart=()=>f(1);u.onend=()=>f(0);speechSynthesis.speak(u)}catch(x){}}
+function tog(){try{if(ps){speechSynthesis.resume();ps=0}else if(speechSynthesis.speaking){speechSynthesis.pause();ps=1}else say(sel.st[run.i].v)}catch(x){}$("pb").textContent=ps?"Play":"Pause";$("st").textContent=ps?"Paused":"Speaking"}
+const ox=o=>`<div class="org"><div class="pn ${o.me?"me":""}"><b>${o.n}</b><div class="k">${o.r}${o.me?" (you)":""}</div></div>${o.k?`<div class="ln"></div><div class="kids">${o.k.map(ox).join("")}</div>`:""}</div>`;
+function oc(){$("md").innerHTML=`<div class="mbx"><div class="hd"><h3>Northwind Labs org chart</h3><button class="b" onclick="$('md').hidden=true">Close</button></div><div style="overflow:auto">${ox(ORG)}</div></div>`;$("md").hidden=false}
+const BR=["BAU","Ad-hoc","KPI"],NM={BAU:"Daily work (BAU)","Ad-hoc":"Ad-hoc requests",KPI:"KPI reporting"},vis=()=>W.filter(w=>w.pub!==false);
+const tl=w=>`<div><b>End result</b>${w.res}</div><div><b>Sign-offs required</b>${w.sign}</div><div><b>Context: why this is done</b>${w.why}</div><div><b>Stakeholders</b>${w.who}</div><div><b>When</b>${w.when}</div><div><b>Tools</b>${w.where}</div>`;
+const pk=w=>`sel=W[${W.indexOf(w)}];draw()`,bar=(l,v)=>`<div class="k">${l}: ${v}</div><div class="pg"><i style="width:${v}%"></i></div>`;
+function draw(){$("nv").innerHTML=[["emp","Employee"],["app","Applicant"],["adm","Admin"]].map(([k,l])=>`<button class="${V===k?"on":""}" onclick="V='${k}';sel=run=null;fl=0;draw()">${l}</button>`).join("");
+const lk=`<a href="#" onclick="oc();return false">View org chart</a>`;
+$("emp").innerHTML=V==="emp"?`<div class="av big">AM</div><div><b>Arjun Mehta</b><div class="k">Product Manager, reports to Ritu Kapoor</div><div class="k">Org ID EMP-20417, ${lk}</div></div>`:V==="app"?`<div class="av big">A</div><div><b>Applicant A</b><div class="k">Applying for Product Manager</div><div class="k">Candidate ID CAN-0042, ${lk}</div></div>`:`<div class="av big">AD</div><div><b>Admin</b><div class="k">Northwind Labs workspace</div><div class="k">${lk}</div></div>`;
+$("ag").style.display=run&&!run.res?"none":"";$("mn").innerHTML=V==="adm"?admin():player()}
+function home(){const L=vis(),n=L.filter(w=>done[w.id]).length,nx=L.find(w=>!done[w.id]);
+const map=BR.map(b=>`<div class="col"><h4>${NM[b]}</h4><div class="rail">`+(L.filter(w=>w.br===b).map(w=>`<button class="nd ${done[w.id]?"dn":""}" onclick="${pk(w)}"><span class="dot">${done[w.id]?"✓":""}</span>${w.t}</button>`).join("")||`<span class="k">Nothing yet</span>`)+`</div></div>`).join("");
+return`<div class="c"><h2>${V==="app"?"Assessment":"Welcome, Arjun"}</h2><p class="k">${V==="app"?"Pick a workflow. There are no hints, and your score goes to the recruiter.":"Product Manager onboarding. Learn each workflow, then prove it once."}</p>${V==="emp"?`<div class="pg"><i style="width:${100*n/L.length}%"></i></div><p class="k">${n} of ${L.length} workflows complete</p>${nx?`<button class="b p" onclick="${pk(nx)}">Continue with “${nx.t}”</button>`:`<b class="ok">All workflows complete.</b>`}`:""}</div><div class="c"><h3>Your role map</h3><div class="tree">${map}</div></div>`}
+function detail(){const w=sel,d=done[w.id];
+return`<button class="b" onclick="sel=null;fl=0;draw()">← Role map</button><div class="c" style="margin-top:12px"><span class="chip">${NM[w.br]}</span>${d?` <span class="chip ok">Completed</span>`:""}<h2 style="margin-top:8px">${w.t}</h2><div class="tl">${tl(w)}</div></div>
+<div class="c"><div class="hd"><h3>Task timeline</h3>${V==="emp"?`<button class="b" onclick="fl=fl===1?0:1;draw()">Flag a step or suggest an update</button>`:""}</div>${fl===1?`<textarea id="cmt" rows="2" placeholder="Which step, and what should change?"></textarea><p><button class="b p" onclick="flag()">Send to admin</button></p>`:fl===2?`<p class="ok">Sent to admin. Thank you.</p>`:""}<ol class="tm">${w.st.map((s,i)=>`<li><span class="nm">${i+1}</span><b>${s.n}</b><div class="k">${s.a}: ${s.s}</div></li>`).join("")}</ol><button class="b p" onclick="go()">${V==="app"?"Start assessment":d?"Replay guide":"Start guided walkthrough"}</button></div>
+<div class="c"><h3>Watch-outs</h3>${w.pit.map(p=>`<div class="wn"><b>${p[0]}</b> ${p[1]}</div>`).join("")}</div>`}
+function player(){if(!sel)return home();if(!run)return detail();if(run.res)return result();
+const s=sel.st[run.i],g=run.m==="guide",n=sel.st.length;
+const btn=(o,j)=>{const h=g&&j===s.k;return`<span class="cw"><button class="ctl ${h?"hl":""}" ${g?`title="${o[1]}"`:""} onclick="pick(${j})">${o[0]}</button>${h?`<span class="tip">Click “${o[0]}”: ${o[1]}.</span>`:""}</span>`},z=x=>s.c.map((o,j)=>o[2]===x?btn(o,j):"").join("");
+return`<div style="display:flex;gap:12px;align-items:center;margin-bottom:14px"><button class="b" onclick="run=null;draw()">Exit</button><div style="flex:1"><div class="k">${sel.t}: step ${run.i+1} of ${n}, ${s.n}. ${g?"Guided":"Your turn"}</div><div class="pg"><i style="width:${100*run.i/n}%"></i></div></div></div>
+<div class="win"><div class="bar"><i></i><i></i><i></i><span class="url">app.northwind.dev/${s.a.toLowerCase()}</span></div><div class="pip"><div class="av big">${AV}</div><div><b>Aria</b><div class="k" id="st">${g?(ps?"Paused":"Speaking"):"Watching quietly"}</div></div><button class="b" id="pb" onclick="tog()" ${g?"":"disabled"}>${ps?"Play":"Pause"}</button></div>
+<div class="app"><nav class="an">${AP[s.a].map(x=>`<span>${x}</span>`).join("")}${z("n")}</nav><div><div class="tb">${z("t")}</div><div class="mn2"><h4>${s.s}</h4><i class="sk"></i><i class="sk"></i><i class="sk w2"></i><div class="mb">${z("m")}</div></div></div></div><div class="cap" id="cp">${g?s.v:"Your turn. Complete this step on your own. I will stay quiet."}</div></div>`+(g?`<div class="c" style="margin-top:14px"><h3>What is on this screen</h3>${s.c.map(o=>`<p style="margin:4px 0"><b>${o[0]}</b> <span class="k">${o[1]}.</span></p>`).join("")}</div>`:"")}
+function result(){const r=run.res,nx=vis().find(w=>!done[w.id]&&w!==sel);
+const ring=r.acc!=null?`<svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="var(--bd)" stroke-width="10"/><circle cx="60" cy="60" r="50" fill="none" stroke="var(--ac)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${3.14*r.total} 314" transform="rotate(-90 60 60)"/><text x="60" y="68" text-anchor="middle" font-size="30" font-weight="800" fill="var(--fg)">${r.total}</text></svg><div>${bar("Accuracy",r.acc)}<div style="height:10px"></div>${bar("Efficiency",r.eff)}</div>`:"";
+return`<div class="c"><h2>${r.msg}</h2><p class="k">${V==="app"?"Your score was sent to the recruiter view.":done[sel.id]?"Unlocked as a reference. Next time this workflow is guide only.":"Replay it any time from the role map."}</p><div class="big">${ring}</div><button class="b" onclick="run=sel=null;draw()">Back to role map</button> ${V==="emp"&&nx?`<button class="b p" onclick="run=null;${pk(nx)}">Next: ${nx.t}</button>`:""}</div>`}
+function go(){ps=0;run={m:V==="app"?"test":"guide",i:0,err:0,t0:Date.now(),first:!done[sel.id]};draw();if(run.m==="guide")say(sel.st[0].v)}
+function pick(j){const s=sel.st[run.i];
+if(j!==s.k){if(run.m!=="guide")run.err++;$("cp").textContent=run.m==="guide"?"Follow the highlighted button.":"That is not the right action. Try again.";return}
+if(++run.i<sel.st.length){draw();if(run.m==="guide")say(sel.st[run.i].v);return}
+const n=sel.st.length;
+if(run.m==="guide"){if(run.first&&V==="emp"){run={m:"test",i:0,err:0,t0:Date.now()};draw();say("Guide finished. Now do it yourself.");return}run.res={msg:"Walkthrough complete"};draw();return}
+const acc=Math.round(100*n/(n+run.err)),sec=(Date.now()-run.t0)/1000,eff=Math.round(Math.max(30,Math.min(100,100-Math.max(0,sec-n*10)*2))),total=Math.round(.7*acc+.3*eff);
+sc.push({w:V==="app"?"Applicant A (dummy)":"Arjun Mehta",t:sel.t,acc,eff,total});if(V==="emp")done[sel.id]=1;
+run.res={msg:"Test run finished",acc,eff,total};draw()}
+const CFG={agentUrl:"",lang:"en-IN"};
+async function ask(t){const raw=typeof t==="string"?t:$("q").value,q=raw.toLowerCase(),w=sel||W[0];
+let r=/who|contact|poc|reach/.test(q)?"Reach "+w.who+".":/break|fail|wrong|issue/.test(q)?w.pit[0].join(" "):/why/.test(q)?w.why:/when/.test(q)?w.when:/where|tool|platform/.test(q)?"This happens in "+w.where+".":"Ask me the why, when, where or who for “"+w.t+"”, or where it tends to break.";
+if(CFG.agentUrl){try{const x=await(await fetch(CFG.agentUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:raw,workflow:w,lang:CFG.lang})})).json();r=x.text||r;if(x.audioUrl){$("an").textContent=r;new Audio(x.audioUrl).play();return}}catch(err){}}
+$("an").textContent=r;say(r)}
+function mic(){const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R){$("an").textContent="Voice input needs Chrome or Edge.";return}
+const r=new R();r.lang=CFG.lang;r.onresult=ev=>{const t=ev.results[0][0].transcript;$("q").value=t;ask(t)};r.onerror=()=>{$("an").textContent="Could not hear you. Check microphone permission."};r.start();$("an").textContent="Listening…"}
+function flag(){const t=$("cmt").value.trim();if(!t)return;cm.push({w:sel.t,t,open:1});fl=2;draw()}
+function ingest(){ing=1;draw();$("ig").textContent="Claude is extracting the workflow…";setTimeout(()=>{ing=2;W.push(D);draw()},1400)}
+function admin(){const d=ing===2;
+return`<div class="c"><h2>Admin</h2><p class="k">Turn SOPs, docs and KT recordings into workflows, then review feedback and scores.</p></div>
+<div class="c"><h3>1. Add knowledge</h3>${d?`<b>${D.t}</b> <span class="chip">${D.pub===false?"Draft":"Published"}</span><div class="tl">${tl(D)}</div>${D.pub===false?`<button class="b p" onclick="D.pub=true;draw()">Publish to employees</button>`:""}`:`<p class="k">Upload an SOP and Claude drafts the workflow record for you to review.</p><button class="b p" onclick="ingest()" ${ing?"disabled":""}>Upload dummy SOP</button> <span id="ig" class="k"></span>`}</div>
+<div class="c"><h3>2. Employee comments</h3>${cm.length?cm.map((c,i)=>`<p><b>${c.w}</b>: ${e(c.t)} ${c.open?`<button class="b" onclick="cm[${i}].open=0;draw()">Resolve</button>`:`<span class="ok">Resolved</span>`}</p>`).join(""):`<p class="k">No comments yet. Switch to Employee and flag a step.</p>`}</div>
+<div class="c"><h3>3. Test scores</h3>${sc.length?`<table><tr><th>Person</th><th>Workflow</th><th style="width:34%">Score</th></tr>${sc.map(r=>`<tr><td>${r.w}</td><td>${r.t}</td><td><div class="pg"><i style="width:${r.total}%"></i></div><span class="k">${r.total} (accuracy ${r.acc}, efficiency ${r.eff})</span></td></tr>`).join("")}</table>`:`<p class="k">No test runs yet. Complete a workflow as Employee or Applicant.</p>`}</div>`}
+$("ag").innerHTML=`<div class="c pnl" id="pn" hidden><h3>Guide</h3><input id="q" placeholder="Who do I contact? Why is this done?"><div style="display:flex;gap:6px;margin:8px 0"><button class="b p" onclick="ask()">Ask</button><button class="b" onclick="mic()">Speak</button></div><p id="an" class="k">Ask about the why, when, where or who of the workflow you are on.</p></div><button class="b fab" onclick="$('pn').hidden=!$('pn').hidden"><span class="av" id="av">AI</span>Ask guide</button>`;
+draw();
+</script></body></html>
